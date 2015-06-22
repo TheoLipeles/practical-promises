@@ -4,7 +4,7 @@ var Promise = require('bluebird');
 var exerciseUtils = require('./utils');
 
 var readFile = exerciseUtils.readFile;
-var promisifiedReadFile = exerciseUtils.promisifedReadFile;
+var promisifiedReadFile = exerciseUtils.promisifiedReadFile;
 
 var green = exerciseUtils.green;
 var red = exerciseUtils.red;
@@ -23,6 +23,12 @@ readFile('poem-one/stanza-01.txt', function (err, stanza) {
 
 // promise version
 // ???
+
+console.log("promisified versoion");
+promisifiedReadFile("poem-one/stanza-01.txt")
+.then(function(stanza) {
+	red(stanza.toString());
+});
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -44,6 +50,14 @@ readFile('poem-one/stanza-03.txt', function (err, stanza3) {
 // promise version
 // ???
 
+promisifiedReadFile("poem-one/stanza-01.txt")
+.then(function(stanza) {
+	red(stanza.toString());
+	return promisifiedReadFile("poem-one/stanza-02.txt");
+})
+.then(function(stanza2) {
+	red(stanza2.toString());
+});
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
@@ -66,6 +80,16 @@ readFile('poem-one/stanza-02.txt', function (err, stanza2) {
 // promise version
 // ???
 
+promisifiedReadFile("poem-one/stanza-02.txt")
+.then(function(stanza) {
+	red(stanza.toString());
+	return promisifiedReadFile("poem-one/stanza-03.txt");
+})
+.then(function(stanza3) {
+	red(stanza3.toString());
+	red("done");
+});
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * D. log poem one stanza four or an error if it occurs
@@ -82,6 +106,13 @@ readFile('poem-one/wrong-file-name.txt', function (err, stanza4) {
 // promise version
 // ???
 
+promisifiedReadFile("poem-one/stanza-04.txt")
+.then(function(stanza) {
+	red(stanza.toString());
+})
+.then(null, function(err) {
+	red(err);
+});
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
@@ -105,6 +136,17 @@ readFile('poem-one/stanza-03.txt', function (err, stanza3) {
 // promise version
 // ???
 
+promisifiedReadFile("poem-one/stanza-03.txt")
+.then(function(stanza3) {
+	red(stanza3.toString());
+	return(promisifiedReadFile("poem-one/stanza-04.txt"));
+})
+.then(function(stanza4) {
+	red(stanza4.toString());
+})
+.then(null, function(err) {
+	red(err);
+});
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
@@ -133,3 +175,23 @@ readFile('poem-one/stanza-03.txt', function (err, stanza3) {
 
 // promise version
 // ???
+
+promisifiedReadFile("poem-one/stanza-03.txt")
+.then(function(stanza3) {
+	red(stanza3.toString());
+	return(promisifiedReadFile("poem-one/stanza-04.txt"));
+})
+.then(function(stanza4) {
+	red(stanza4.toString());
+})
+.then(null, function(err) {
+	red(err);
+})
+.then(function(){
+	red("DONE!");
+});
+
+
+
+
+
