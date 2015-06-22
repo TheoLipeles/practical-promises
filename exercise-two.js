@@ -5,10 +5,21 @@ var async = require('async');
 var exerciseUtils = require('./utils');
 
 var readFile = exerciseUtils.readFile;
-var promisifiedReadFile = exerciseUtils.promisifedReadFile;
+var promisifiedReadFile = exerciseUtils.promisifiedReadFile;
 
 var green = exerciseUtils.green;
 var red = exerciseUtils.red;
+var filenames = (function(){
+	var arr = [];
+	for (var i = 1; i <= 9; i++) {
+		arr.push('poem-two/stanza-0' + i + '.txt');
+	}
+	return arr;
+})();
+var promisesArr = filenames.map(function(fileName){
+	return promisifiedReadFile(fileName);
+});
+
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
@@ -34,6 +45,15 @@ async.each(['poem-two/stanza-01.txt', 'poem-two/stanza-02.txt'],
 // promise version
 // ???
 
+var firstTwo = promisesArr.slice(0,2);
+Promise.all(firstTwo)
+.then(function(contents) {
+	contents.forEach(function(stanza){
+		red(stanza.toString());
+	});
+	red("DONE");
+});
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * B. log all the stanzas in poem two, in any order
@@ -41,9 +61,9 @@ async.each(['poem-two/stanza-01.txt', 'poem-two/stanza-02.txt'],
  *
  */
 
-var filenames = [1,2,3,4,5,6,7,8].map(function (n) {
-	return 'poem-two/' + 'stanza-0' + n + '.txt';
-});
+// var filenames = [1,2,3,4,5,6,7,8].map(function (n) {
+// 	return 'poem-two/' + 'stanza-0' + n + '.txt';
+// });
 
 // callback version
 async.each(filenames,
@@ -61,6 +81,16 @@ async.each(filenames,
 
 // promise version
 // ???
+Promise.all(promisesArr)
+.then(function(contents) {
+	contents.forEach(function(stanza){
+		red(stanza.toString());
+	});
+	red("DONE");
+});
+
+
+
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
@@ -85,7 +115,13 @@ async.eachSeries(filenames,
 
 // promise version
 // ???
-
+Promise.all(promisesArr)
+.then(function(contents) {
+	contents.forEach(function(stanza){
+		red(stanza.toString());
+	});
+	red("DONE");
+});
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * D. log all the stanzas in poem two, *in order*
@@ -115,6 +151,18 @@ async.eachSeries(filenames,
 
 // promise version
 // ???
+Promise.all(promisesArr)
+.then(function(contents) {
+	contents.forEach(function(stanza){
+		red(stanza.toString());
+	});
+})
+.then(null, function(err){
+	red("WRONG!" + err);
+})
+.then(function(){
+	red("done!!!!!!!!");
+});
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
@@ -123,4 +171,14 @@ async.eachSeries(filenames,
  */
 
 var fs = require('fs');
-function promisifiedWriteFile (filename, str) {}
+function promisifiedWriteFile (filename, str) {
+	return new Promise(function(resolve, reject) {
+		fs.writeFile(filename, str);
+		resolve();
+	});
+}
+
+promisifiedWriteFile('poem-two/stanza-09.txt', "HEY ROWAR!!!")
+.then(function(contents){
+	red("DOUBLE DOooooooooooooo o o                                                    ONE");
+});
